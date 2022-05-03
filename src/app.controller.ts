@@ -2,10 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Client } from '@notionhq/client';
 import { NotionBlocksHtmlParser } from '@notion-stuff/blocks-html-parser';
-import {
-  BlockObjectResponse,
-  GetBlockResponse,
-} from '@notionhq/client/build/src/api-endpoints';
+import { GetBlockResponse } from '@notionhq/client/build/src/api-endpoints';
 import { ConfigService } from '@nestjs/config';
 
 type Block = Extract<
@@ -28,13 +25,13 @@ class Post {
   }
 }
 
-const parsePages = (pages: BlockObjectResponse[]) => {
+const parsePages = (pages: any[]) => {
   return pages
     .filter((result) => result.type === BLOCK_TYPE.CHILD_PAGE)
     .map((result) => new Post(result.id, result[result.type].title));
 };
 
-@Controller()
+@Controller('/api')
 export class AppController {
   private notionApiKey: string;
   private rootPageId: string;
@@ -55,9 +52,7 @@ export class AppController {
 
     return notion.blocks.children
       .list({ block_id: this.rootPageId })
-      .then((response) =>
-        parsePages(response.results as BlockObjectResponse[]),
-      );
+      .then((response) => parsePages(response.results));
   }
 
   @Get('/posts/:blockId')
