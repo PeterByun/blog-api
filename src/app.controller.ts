@@ -44,7 +44,7 @@ export class AppController {
     this.rootPageId = this.configService.get<string>('NEST_ROOT_PAGE_ID');
   }
 
-  @Get('/posts')
+  @Get('posts')
   getPosts(): any {
     const notion = new Client({
       auth: this.notionApiKey,
@@ -55,7 +55,7 @@ export class AppController {
       .then((response) => parsePages(response.results));
   }
 
-  @Get('/posts/:blockId')
+  @Get('posts/:blockId')
   getPost(@Param('blockId') blockId): Promise<string> {
     const notion = new Client({
       auth: this.notionApiKey,
